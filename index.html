@@ -1,219 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Tax Calculator</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Load Inter font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Tax Calculator</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(43, 94, 144, 0.25), transparent 12%),
+                radial-gradient(900px 500px at 90% 90%, rgba(138, 35, 135, 0.18), transparent 12%),
+                linear-gradient(180deg,#071021 0%, #0f1724 100%);
+    color: #f5f7fa;
+  }
+
+  /* Card look */
+  .glass {
+    background: rgba(25, 33, 45, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Input styling */
+  input, select {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff; /* brighter text */
+  }
+
+  input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  label {
+    color: #e0e6ed;
+  }
+
+  /* On focus */
+  input:focus, select:focus {
+    border-color: #FBBD23;
+    box-shadow: 0 0 8px rgba(251, 189, 35, 0.4);
+    outline: none;
+  }
+
+  /* Button improvement */
+  button {
+    background: #FBBD23;
+    color: #111827;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    background: #f3a300;
+    box-shadow: 0 0 15px #FBBD23;
+    transform: scale(1.02);
+  }
+
+  /* Result text color fix */
+  #results span {
+    color: #f9fafb;
+  }
+
+  #results .text-amber-200 {
+    color: #FFD97A;
+  }
+/* Fix dropdown font color and background */
+select {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg fill='none' stroke='%23FBBD23' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Fix dropdown text color for opened options */
+select option {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+/* Selected option */
+select option:checked {
+  background-color: #FBBD23;
+  color: #111827;
+}
+
+/* Hovered option (for browsers that support it) */
+select option:hover {
+  background-color: #f3a300;
+  color: #111827;
+}
+
+/* On focus */
+select:focus {
+  border-color: #FBBD23;
+  box-shadow: 0 0 8px rgba(251, 189, 35, 0.4);
+  outline: none;
+}
+    </style>
     
     <style>
-        /* Apply Inter font family */
-        body {
-            font-family: 'Inter', sans-serif;
+        /* Result reveal animation */
+        #results {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.5s ease, max-height 0.5s ease;
         }
-        
-        /* Custom styles for number input arrows (optional but nice) */
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        #results.show {
+        opacity: 1;
+        max-height: 1000px; /* large enough to show content */
         }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
+    </style>    
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-6">
 
-    <!-- Main calculator card -->
-    <div class="max-w-lg w-full bg-white p-6 sm:p-8 rounded-xl shadow-lg">
-        
-        <!-- Header -->
-        <div class="text-center mb-6">
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Simple Tax Calculator</h1>
-            <p class="text-sm text-gray-500 mt-1">Estimate your tax based on a flat percentage</p>
+  <div class="max-w-xl w-full glass rounded-2xl shadow-2xl p-6 sm:p-8 container-pad">
+    <!-- header -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-lg sm:text-2xl font-semibold tracking-tight">Simple Tax Calculator</h1>
+        <p class="text-xs text-sky-200/60 mt-1">Estimate your tax using a flat percentage • Built by Timothy</p>
+      </div>
+      <div class="text-right">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/3 text-xs">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-300" viewBox="0 0 20 20" fill="currentColor"><path d="M9.05 2.05a7 7 0 11-4.95 11.95 1 1 0 01.9-1.8A5 5 0 109 4.93a1 1 0 01-1.95-.88A7 7 0 019.05 2.05z"/></svg>
+          <span class="text-xxs text-slate-100/85">Estimate</span>
         </div>
-
-        <!-- Disclaimer -->
-        <div class="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-center">
-            <p class="text-sm font-medium text-red-700">
-                <strong>Disclaimer:</strong> This is a simplified estimate for educational purposes only. It is not financial or tax advice.
-            </p>
-        </div>
-
-        <!-- Form -->
-        <form id="tax-form" class="space-y-6">
-
-            <!-- Gross Income -->
-            <div>
-                <label for="gross-income" class="block text-sm font-medium text-gray-700">Annual Gross Income</label>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <input type="number" id="gross-income" placeholder="e.g., 75000" class="block w-full rounded-lg border-gray-300 pl-3 pr-3 py-3 focus:border-blue-500 focus:ring-blue-500" required>
-                </div>
-            </div>
-
-            <!-- Deductions -->
-            <div>
-                <label for="deductions" class="block text-sm font-medium text-gray-700">Deductions</label>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <input type="number" id="deductions" placeholder="0" class="block w-full rounded-lg border-gray-300 pl-3 pr-3 py-3 focus:border-blue-500 focus:ring-blue-500">
-                </div>
-                <p class="mt-2 text-xs text-gray-500">Enter any deductions (optional). Income after deductions will be taxed.</p>
-            </div>
-
-            <!-- Tax Percentage -->
-            <div>
-                <label for="tax-percentage" class="block text-sm font-medium text-gray-700">Tax Percentage (%)</label>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <input type="number" id="tax-percentage" placeholder="e.g., 20" class="block w-full rounded-lg border-gray-300 pl-3 pr-7 py-3 focus:border-blue-500 focus:ring-blue-500" required>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center">
-                        <span class="text-gray-500 sm:text-sm">%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Currency Select -->
-            <div>
-                <label for="currency-select" class="block text-sm font-medium text-gray-700">Currency</label>
-                <select id="currency-select" class="mt-1 block w-full rounded-lg border-gray-300 py-3 pl-3 pr-10 focus:border-blue-500 focus:ring-blue-500 shadow-sm">
-                    <option value="$">USD ($)</option>
-                    <option value="€">EUR (€)</option>
-                    <option value="£">GBP (£)</option>
-                    <option value="¥">JPY (¥)</option>
-                    <option value="A$">AUD (A$)</option>
-                    <option value="C$">CAD (C$)</option>
-                    <option value="Fr">CHF (Fr)</option>
-                    <option value="¥">CNY (¥)</option>
-                    <option value="₹">INR (₹)</option>
-                    <option value="R$">BRL (R$)</option>
-                    <option value="R">ZAR (R)</option>
-                    <option value="₩">KRW (₩)</option>
-                    <option value="Mex$">MXN (Mex$)</option>
-                    <option value="S$">SGD (S$)</option>
-                    <option value="NZ$">NZD (NZ$)</option>
-                    <option value="₦">NGN (₦)</option>
-                </select>
-            </div>
-            
-            <!-- Calculate Button -->
-            <button type="submit" class="w-full bg-blue-600 text-white font-medium py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
-                Calculate Estimate
-            </button>
-        </form>
-
-        <!-- Results Section -->
-        <div id="results" class="hidden mt-8 pt-6 border-t border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Your Estimated Tax</h2>
-            <div class="space-y-4">
-                <!-- Taxable Income -->
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg">
-                    <span class="font-medium text-gray-700">Taxable Income</span>
-                    <span id="taxable-income" class="font-bold text-lg text-gray-900"></span>
-                </div>
-                <!-- Total Tax -->
-                <div class="flex justify-between items-center bg-blue-50 p-4 rounded-lg">
-                    <span class="font-medium text-blue-800">Estimated Total Tax</span>
-                    <span id="total-tax" class="font-bold text-xl text-blue-900"></span>
-                </div>
-                <!-- Effective Rate -->
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg">
-                    <span class="font-medium text-gray-700">Effective Tax Rate</span>
-                    <span id="effective-rate" class="font-bold text-lg text-gray-900"></span>
-                </div>
-            </div>
-        </div>
-
+      </div>
     </div>
 
-    <script>
-        // --- DOM ELEMENTS ---
-        const form = document.getElementById('tax-form');
-        const currencySelect = document.getElementById('currency-select');
-        const grossIncomeInput = document.getElementById('gross-income');
-        const deductionsInput = document.getElementById('deductions');
-        const taxPercentageInput = document.getElementById('tax-percentage');
-        const resultsDiv = document.getElementById('results');
-        const taxableIncomeEl = document.getElementById('taxable-income');
-        const totalTaxEl = document.getElementById('total-tax');
-        const effectiveRateEl = document.getElementById('effective-rate');
+    <div class="mb-5 p-3 rounded-lg bg-red-50/10 border border-red-200/6 text-center">
+      <p class="text-sm text-red-300/95"><strong>Disclaimer:</strong> This is a simplified estimate for educational purposes only. Not tax advice.</p>
+    </div>
 
-        // --- HELPER FUNCTIONS ---
-        
-        /**
-         * Formats a number as currency with a given symbol.
-         * @param {number} number - The number to format.
-         * @param {string} symbol - The currency symbol (e.g., "$", "€").
-         * @returns {string} - The formatted currency string.
-         */
-        function formatCurrency(number, symbol) {
-            // Format the number with commas and 2 decimal places
-            const formattedNumber = number.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            // Prepend the symbol
-            return `${symbol} ${formattedNumber}`;
-        }
+    <!-- form -->
+    <form id="tax-form" class="space-y-5" novalidate>
+      <div>
+        <label for="gross-income" class="block text-xs font-medium text-slate-200/80 mb-2">Annual Gross Income</label>
+        <input id="gross-income" type="number" min="0" placeholder="e.g., 75000"
+               class="input-focus block w-full rounded-lg border border-white/8 bg-white/3 px-3 py-3 placeholder-slate-200/40 text-slate-50 focus:ring-0" required>
+      </div>
 
-        /**
-         * Formats a number as a percentage.
-         * @param {number} number - The number (e.g., 0.123) to format.
-         * @returns {string} - The formatted percentage string.
-         */
-        function formatPercent(number) {
-            return number.toLocaleString('en-US', {
-                style: 'percent',
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1
-            });
-        }
-        
-        // --- EVENT HANDLERS ---
-        
-        /**
-         * Main function to handle form submission.
-         * @param {Event} event - The form submit event.
-         */
-        function handleCalculate(event) {
-            event.preventDefault(); // Stop form from reloading page
+      <div>
+        <label for="deductions" class="block text-xs font-medium text-slate-200/80 mb-2">Deductions</label>
+        <input id="deductions" type="number" min="0" placeholder="0"
+               class="input-focus block w-full rounded-lg border border-white/8 bg-white/3 px-3 py-3 placeholder-slate-200/40 text-slate-50 focus:ring-0">
+        <p class="mt-2 text-2xs text-slate-200/50">Optional — amount subtracted from gross income before tax</p>
+      </div>
 
-            // 1. Get values from form
-            const currencySymbol = currencySelect.value;
-            const grossIncome = parseFloat(grossIncomeInput.value) || 0;
-            const deductions = parseFloat(deductionsInput.value) || 0;
-            const taxPercentage = parseFloat(taxPercentageInput.value) || 0;
+      <div>
+        <label for="tax-percentage" class="block text-xs font-medium text-slate-200/80 mb-2">Tax Percentage (%)</label>
+        <div class="relative">
+          <input id="tax-percentage" type="number" min="0" max="100" placeholder="e.g., 20"
+                 class="input-focus block w-full rounded-lg border border-white/8 bg-white/3 px-3 py-3 pr-10 placeholder-slate-200/40 text-slate-50 focus:ring-0" required>
+          <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-200/70">%</div>
+        </div>
+      </div>
 
-            if (grossIncome <= 0 || taxPercentage <= 0) {
-                // simple validation
-                resultsDiv.classList.add('hidden');
-                return;
-            }
+      <div>
+        <label for="currency-select" class="block text-xs font-medium text-slate-200/80 mb-2">Currency</label>
+        <select id="currency-select" class="input-focus block w-full rounded-lg border border-white/8 bg-white/3 px-3 py-3 text-slate-50">
+          <option value="$">USD ($)</option>
+          <option value="€">EUR (€)</option>
+          <option value="£">GBP (£)</option>
+          <option value="¥">JPY (¥)</option>
+          <option value="A$">AUD (A$)</option>
+          <option value="C$">CAD (C$)</option>
+          <option value="Fr">CHF (Fr)</option>
+          <option value="¥">CNY (¥)</option>
+          <option value="₹">INR (₹)</option>
+          <option value="R$">BRL (R$)</option>
+          <option value="R">ZAR (R)</option>
+          <option value="₩">KRW (₩)</option>
+          <option value="Mex$">MXN (Mex$)</option>
+          <option value="S$">SGD (S$)</option>
+          <option value="NZ$">NZD (NZ$)</option>
+          <option value="₦">NGN (₦)</option>
+        </select>
+      </div>
 
-            // 2. Perform calculations
-            const taxableIncome = Math.max(0, grossIncome - deductions);
-            const totalTax = taxableIncome * (taxPercentage / 100);
-            const effectiveRate = (grossIncome > 0) ? (totalTax / grossIncome) : 0;
+      <button type="submit" class="w-full inline-flex items-center justify-center gap-3 bg-amber-400 text-slate-900 font-semibold py-3 rounded-lg shadow-md hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-300/30 transition">
+        Calculate Estimate
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </form>
 
-            // 3. Display results
-            taxableIncomeEl.textContent = formatCurrency(taxableIncome, currencySymbol);
-            totalTaxEl.textContent = formatCurrency(totalTax, currencySymbol);
-            effectiveRateEl.textContent = formatPercent(effectiveRate);
-            
-            // 4. Show the results section
-            resultsDiv.classList.remove('hidden');
-        }
+    <!-- results -->
+    <div id="results" class="reveal mt-8 pt-6 border-t border-white/6">
+      <h2 class="text-sm font-semibold text-slate-100 mb-4 text-center">Your Estimated Tax</h2>
 
-        // --- INITIALIZE ---
-        
-        // Add event listener for form submission
-        form.addEventListener('submit', handleCalculate);
-        
-    </script>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center bg-white/4 p-3 rounded-lg">
+          <span class="text-sm text-slate-200">Taxable Income</span>
+          <span id="taxable-income" class="font-semibold text-slate-50"></span>
+        </div>
+
+        <div class="flex justify-between items-center bg-amber-50/6 p-3 rounded-lg">
+          <span class="text-sm text-amber-200 font-medium">Estimated Total Tax</span>
+          <span id="total-tax" class="font-semibold text-amber-100 text-lg"></span>
+        </div>
+
+        <div class="flex justify-between items-center bg-white/4 p-3 rounded-lg">
+          <span class="text-sm text-slate-200">Effective Tax Rate</span>
+          <span id="effective-rate" class="font-semibold text-slate-50"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM
+    const form = document.getElementById('tax-form');
+    const currencySelect = document.getElementById('currency-select');
+    const grossIncomeInput = document.getElementById('gross-income');
+    const deductionsInput = document.getElementById('deductions');
+    const taxPercentageInput = document.getElementById('tax-percentage');
+    const resultsDiv = document.getElementById('results');
+    const taxableIncomeEl = document.getElementById('taxable-income');
+    const totalTaxEl = document.getElementById('total-tax');
+    const effectiveRateEl = document.getElementById('effective-rate');
+
+    // format currency (keeps symbol + thousands, 2 decimals)
+    function formatCurrency(number, symbol) {
+      if (!isFinite(number)) return `${symbol} 0.00`;
+      return `${symbol} ${Number(number).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
+    }
+
+    function formatPercent(number) {
+      return Number(number).toLocaleString('en-US', {
+        style: 'percent',
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      });
+    }
+
+    function showResults() {
+      resultsDiv.classList.add('show');
+      resultsDiv.classList.remove('hidden');
+      // small reflow to ensure transition runs
+      void resultsDiv.offsetWidth;
+    }
+
+    function hideResults() {
+      resultsDiv.classList.remove('show');
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const currencySymbol = currencySelect.value || '$';
+      const grossIncome = parseFloat(grossIncomeInput.value);
+      const deductions = parseFloat(deductionsInput.value) || 0;
+      const taxPercentage = parseFloat(taxPercentageInput.value);
+
+      // validation
+      if (isNaN(grossIncome) || grossIncome <= 0) {
+        alert('Please enter a valid gross income greater than 0.');
+        hideResults();
+        return;
+      }
+      if (isNaN(taxPercentage) || taxPercentage <= 0) {
+        alert('Please enter a valid tax percentage greater than 0.');
+        hideResults();
+        return;
+      }
+      if (deductions < 0) {
+        alert('Deductions cannot be negative.');
+        hideResults();
+        return;
+      }
+
+      // calculations
+      const taxableIncome = Math.max(0, grossIncome - deductions);
+      const totalTax = taxableIncome * (taxPercentage / 100);
+      const effectiveRate = grossIncome > 0 ? (totalTax / grossIncome) : 0;
+
+      // render
+      taxableIncomeEl.textContent = formatCurrency(taxableIncome, currencySymbol);
+      totalTaxEl.textContent = formatCurrency(totalTax, currencySymbol);
+      effectiveRateEl.textContent = formatPercent(effectiveRate);
+
+      showResults();
+      // smooth scroll to results on small screens
+      if (window.innerWidth < 640) {
+        resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    // hide results initially
+    hideResults();
+  </script>
 </body>
 </html>
